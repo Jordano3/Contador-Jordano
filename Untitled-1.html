@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Jordano, el amor de tu vida</title>
+    <script type="module">
+        // Importar Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrgZj6tiaU_Jpw_PrCGAkPYDDd9cJUnt8",
+            authDomain: "contador-de-jordano.firebaseapp.com",
+            projectId: "contador-de-jordano",
+            storageBucket: "contador-de-jordano.appspot.com",
+            messagingSenderId: "740165620108",
+            appId: "1:740165620108:web:fd8785cdc03c75c0bc86a9",
+            measurementId: "G-XC08D6L57H"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const docRef = doc(db, "contador", "valores");
+
+        function updateDisplay(data) {
+            document.getElementById('countJ').innerText = data.J;
+            document.getElementById('countX').innerText = data.X;
+            document.getElementById('countD').innerText = data.D;
+        }
+
+        // Leer los datos en tiempo real
+        onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+                updateDisplay(docSnap.data());
+            }
+        });
+
+        async function increment(letter) {
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                let data = docSnap.data();
+                data[letter]++;
+                await updateDoc(docRef, { [letter]: data[letter] });
+            } else {
+                await setDoc(docRef, { J: 0, X: 0, D: 0 });
+            }
+        }
+
+        async function resetValues() {
+            await setDoc(docRef, { J: 0, X: 0, D: 0 });
+        }
+
+        // Exponer las funciones en el ámbito global
+        window.increment = increment;
+        window.resetValues = resetValues;
+    </script>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            color: #4a4a4a;
+            overflow: hidden;
+            /* Imagen de fondo */
+            background-image: url('https://drive.google.com/thumbnail?id=1zDnZLtJXvveTDJtrO4s065Eb_XedHbrb&sz=w1000'); /* Tu imagen de fondo */
+            background-size: cover; /* Ajusta la imagen para cubrir todo el fondo */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
+            background-attachment: fixed; /* Fija la imagen para que no se desplace */
+        }
+        h1 {
+            font-size: 3rem;
+            margin-top: 20px;
+            color: #d63384;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 2s ease-in-out;
+        }
+        .main-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+            animation: slideIn 1.5s ease-in-out;
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 90%;
+        }
+        .image {
+            width: 200px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .image:hover {
+            transform: scale(1.1);
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        .counter {
+            border: 2px solid #d63384;
+            padding: 20px;
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .counter:hover {
+            transform: scale(1.05);
+        }
+        .counter h2 {
+            font-size: 2rem;
+            color: #d63384;
+        }
+        .counter p {
+            font-size: 1.5rem;
+            margin: 10px 0;
+            color: #4a4a4a;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #d63384;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        button:hover {
+            background-color: #b02a6b;
+            transform: scale(1.05);
+        }
+        .romantic-message {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            font-style: italic;
+            color: #d63384;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 3s ease-in-out;
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .reset-container {
+            margin-top: 20px;
+            animation: fadeIn 4s ease-in-out;
+        }
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .hearts span {
+            position: absolute;
+            display: block;
+            width: 20px;
+            height: 20px;
+            background: #ff9a9e;
+            box-shadow: 0 0 10px #ff9a9e, 0 0 20px #ff9a9e, 0 0 40px #ff9a9e;
+            border-radius: 50%;
+            animation: animateHearts 5s linear infinite;
+        }
+        @keyframes animateHearts {
+            0% {
+                transform: translateY(-10%) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts">
+        <span style="left: 5%; animation-delay: 0s;"></span>
+        <span style="left: 15%; animation-delay: 2s;"></span>
+        <span style="left: 25%; animation-delay: 4s;"></span>
+        <span style="left: 35%; animation-delay: 6s;"></span>
+        <span style="left: 45%; animation-delay: 8s;"></span>
+        <span style="left: 55%; animation-delay: 10s;"></span>
+        <span style="left: 65%; animation-delay: 12s;"></span>
+        <span style="left: 75%; animation-delay: 14s;"></span>
+        <span style="left: 85%; animation-delay: 16s;"></span>
+        <span style="left: 95%; animation-delay: 18s;"></span>
+    </div>
+    <h1>Contador de Jordano</h1>
+    <div class="main-container">
+        <img class="image" src="https://drive.google.com/thumbnail?id=1djk_ng49iOQQWCcn_stINy8KWyJ_hdbP&sz=w1000" alt="Imagen Izquierda">
+        <div class="container">
+            <div class="counter">
+                <h2>J</h2>
+                <p id="countJ">0</p>
+                <button onclick="increment('J')">Sumar</button>
+            </div>
+            <div class="counter">
+                <h2>X</h2>
+                <p id="countX">0</p>
+                <button onclick="increment('X')">Sumar</button>
+            </div>
+            <div class="counter">
+                <h2>D</h2>
+                <p id="countD">0</p>
+                <button onclick="increment('D')">Sumar</button>
+            </div>
+        </div>
+        <img class="image" src="https://drive.google.com/thumbnail?id=1rft_o4jXZRt9WGT9y6Sb2oeCGlnBXeuj&sz=w1000" alt="Imagen Derecha">
+    </div>
+    <div class="reset-container">
+        <button onclick="resetValues()">Reiniciar Contador</button>
+    </div>
+    <p class="romantic-message">Cada partida que jugamos es un momento más juntos. Te amo. ❤️</p>
+</body>
+</html>
